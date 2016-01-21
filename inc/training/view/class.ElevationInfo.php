@@ -63,7 +63,7 @@ class ElevationInfo {
 	protected function handleRequest() {
 		if (Request::param('use-calculated-value') == 'true') {
 			$oldObject = clone $this->Context->activity();
-			$this->Context->activity()->set(Model\Activity\Object::ELEVATION, $this->Context->route()->elevation());
+			$this->Context->activity()->set(Model\Activity\Entity::ELEVATION, $this->Context->route()->elevation());
 
 			$Updater = new Model\Activity\Updater(
 				DB::getInstance(),
@@ -271,8 +271,8 @@ class ElevationInfo {
 		return array(
 			'&strategy=GeoTIFF' => sprintf(__('correct again using %s'), __('srtm files')),
 			'&strategy=Geonames' => sprintf(__('correct again using %s'), 'geonames.org'),
-			'&strategy=DataScienceToolkit' => sprintf(__('correct again using %s'), 'datasciencetoolkit.org'),
-			'&strategy=GoogleMaps' => sprintf(__('correct again using %s'), 'maps.google.com')
+			'&strategy=GoogleMaps' => sprintf(__('correct again using %s'), 'maps.google.com'),
+			'&strategy=none' => __('remove corrected elevation data')
 		);
 	}
 

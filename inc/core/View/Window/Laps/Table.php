@@ -75,12 +75,33 @@ class Table {
 	 * @param \Runalyze\Data\Laps\Laps $laps
 	 * @param \Runalyze\Activity\Duration $demandedTime
 	 * @param \Runalyze\Activity\Pace $demandedPace
+	 * @param bool $isRunning
 	 */
-	public function __construct(Laps $laps, Duration $demandedTime, Pace $demandedPace) {
+	public function __construct(Laps $laps, Duration $demandedTime, Pace $demandedPace, $isRunning)
+	{
 		$this->Laps = $laps;
 		$this->DemandedTime = $demandedTime;
 		$this->DemandedPace = $demandedPace;
+
+		$this->defineAdditionalKeys($isRunning);
+	}
+
+	/**
+	 * @param $isRunning
+	 */
+	protected function defineAdditionalKeys($isRunning) {
 		$this->AdditionalKeys = array_keys($this->Laps->at(0)->additionalValues());
+
+		if (!$isRunning) {
+			$this->AdditionalKeys = array_diff($this->AdditionalKeys, array(
+				Activity\Entity::GROUNDCONTACT,
+				Activity\Entity::GROUNDCONTACT_BALANCE,
+				Activity\Entity::VERTICAL_OSCILLATION,
+				Activity\Entity::VERTICAL_RATIO,
+				Activity\Entity::STRIDE_LENGTH,
+				Activity\Entity::VDOT
+			));
+		}
 	}
 
 	/**
@@ -185,34 +206,42 @@ class Table {
 	 */
 	protected function additionalTableCellsFor(\Runalyze\Data\Laps\Lap $Lap) {
 		$Code = '';
-		$View = new Dataview(new Activity\Object(
+		$View = new Dataview(new Activity\Entity(
 			$Lap->additionalValues()
 		));
 
 		foreach ($this->AdditionalKeys as $key) {
 			switch ($key) {
-				case Activity\Object::CADENCE:
+				case Activity\Entity::CADENCE:
 					$Code .= '<td>'.$View->cadence()->asString().'</td>';
 					break;
 
-				case Activity\Object::GROUNDCONTACT:
+				case Activity\Entity::GROUNDCONTACT:
 					$Code .= '<td>'.$View->groundcontact().'</td>';
 					break;
 
-				case Activity\Object::VERTICAL_OSCILLATION:
+				case Activity\Entity::GROUNDCONTACT_BALANCE:
+					$Code .= '<td>'.$View->groundcontactBalance().'</td>';
+					break;
+
+				case Activity\Entity::VERTICAL_OSCILLATION:
 					$Code .= '<td>'.$View->verticalOscillation().'</td>';
 					break;
 				    
-				case Activity\Object::VERTICAL_RATIO:
+				case Activity\Entity::VERTICAL_RATIO:
 					$Code .= '<td>'.$View->verticalRatio().'</td>';
 					break;
 
-				case Activity\Object::STRIDE_LENGTH:
+				case Activity\Entity::STRIDE_LENGTH:
 					$Code .= '<td>'.$View->strideLength()->string().'</td>';
 					break;
 
-				case Activity\Object::VDOT:
+				case Activity\Entity::VDOT:
 					$Code .= '<td>'.$View->vdot()->value().'</td>';
+					break;
+
+				case Activity\Entity::POWER:
+					$Code .= '<td>'.$View->power().'</td>';
 					break;
 
 				default:
@@ -224,22 +253,27 @@ class Table {
 	}
 
 	/**
-	 * 
-	 * @param type $key
+	 * @param string $key
 	 * @return string
 	 */
 	protected function labelForAdditionalValue($key) {
 		switch ($key) {
-			case Activity\Object::CADENCE:
+			case Activity\Entity::CADENCE:
 				return __('Cadence');
-			case Activity\Object::GROUNDCONTACT:
+			case Activity\Entity::GROUNDCONTACT:
 				return __('Ground contact time');
-			case Activity\Object::VERTICAL_OSCILLATION:
+			case Activity\Entity::GROUNDCONTACT_BALANCE:
+				return __('Ground contact balance');
+			case Activity\Entity::VERTICAL_OSCILLATION:
 				return __('Vertical oscillation');
-			case Activity\Object::STRIDE_LENGTH:
+			case Activity\Entity::VERTICAL_RATIO:
+				return __('Vertical ratio');
+			case Activity\Entity::STRIDE_LENGTH:
 				return __('Stride length');
-			case Activity\Object::VDOT:
+			case Activity\Entity::VDOT:
 				return __('VDOT');
+			case Activity\Entity::POWER:
+				return __('Power');
 		}
 
 		return '';
@@ -269,7 +303,7 @@ class Table {
 	 */
 	protected function checkboxToToggleInactiveSplits() {
 		if ($this->IndexActive == 1 || $this->IndexResting == 1) {
-			return;
+			return '';
 		}
 
 		$Code  = '<p class="checkbox-first">';

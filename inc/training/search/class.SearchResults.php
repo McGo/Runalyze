@@ -9,6 +9,8 @@ use Runalyze\Activity\Duration;
 use Runalyze\Activity\Elevation;
 use Runalyze\Activity\StrideLength;
 use Runalyze\Configuration;
+use Runalyze\Activity\Temperature;
+use Runalyze\Data\Weather\WindSpeed;
 
 /**
  * Search results
@@ -27,12 +29,6 @@ class SearchResults {
 	 * @var array
 	 */
 	protected $AllowedKeys = array();
-
-	/**
-	 * Dataset
-	 * @var Dataset
-	 */
-	protected $Dataset = null;
 
 	/**
 	 * Colspan
@@ -112,6 +108,10 @@ class SearchResults {
 
 			'elevation',
 			'temperature',
+			'wind_speed',
+			'humdity',
+			'pressure',
+			
 			'kcal',
 
 			'partner',
@@ -258,6 +258,10 @@ class SearchResults {
                                 $value = 100*$_POST[$key];
 			} elseif ($key == 'stride_length') {
 				$value = (new StrideLength())->setInPreferredUnit($_POST[$key])->cm();
+			} elseif ($key == 'temperature') {
+				$value = (new Temperature())->setInPreferredUnit($_POST[$key])->celsius();
+			} elseif ($key == 'wind_speed') {
+				$value = (new WindSpeed())->setInPreferredUnit($_POST[$key])->value();
 			} else {
 				$value = $_POST[$key];
 			}
@@ -527,7 +531,7 @@ class SearchResults {
 	 * @param \Runalyze\View\Dataset\Table $Table
 	 */
 	protected function displayTrainingRows(\Runalyze\View\Dataset\Table $Table) {
-		$Context = new \Runalyze\Dataset\Context(new Runalyze\Model\Activity\Object(), $this->AccountID);
+		$Context = new \Runalyze\Dataset\Context(new Runalyze\Model\Activity\Entity(), $this->AccountID);
 
 		foreach ($this->Trainings as $training) {
 			$date = date("d.m.Y", $training['time']);

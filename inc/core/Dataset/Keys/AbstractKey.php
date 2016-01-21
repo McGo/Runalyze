@@ -25,7 +25,9 @@ abstract class AbstractKey
 
 	/**
 	 * Database column
-	 * @return string
+	 *
+	 * Warning: Summary mode must be 'NO' (or a special one which can handle multiple keys) if an array is returned.
+	 * @return string|array
 	 */
 	abstract public function column();
 
@@ -79,7 +81,7 @@ abstract class AbstractKey
 
 	/**
 	 * Get string to display this dataset value
-	 * @param Runalyze\Dataset\Context $context
+	 * @param \Runalyze\Dataset\Context $context
 	 * @return string
 	 */
 	abstract public function stringFor(Context $context);

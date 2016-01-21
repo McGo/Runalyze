@@ -9,7 +9,7 @@ namespace Runalyze\Dataset\Keys;
 use Runalyze\Activity;
 use Runalyze\Configuration;
 use Runalyze\Dataset\Context;
-use Runalyze\Model\Activity\Splits\Object;
+use Runalyze\Model\Activity\Splits\Entity;
 use Runalyze\View\Icon;
 
 /**
@@ -84,11 +84,11 @@ class Splits extends AbstractKey
 	}
 
 	/**
-	 * @param \Runalyze\Model\Activity\Splits\Object $Splits
+	 * @param \Runalyze\Model\Activity\Splits\Entity $Splits
 	 * @return string
 	 * @codeCoverageIgnore
 	 */
-	protected function stringForActiveLaps(Object $Splits)
+	protected function stringForActiveLaps(Entity $Splits)
 	{
 		$laps = [];
 		$onlyActiveSplits = $Splits->hasActiveAndInactiveLaps();

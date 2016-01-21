@@ -16,22 +16,22 @@ use Runalyze\Model\Trackdata;
  */
 class TimeSeriesForTrackdata extends TimeSeries {
 	/**
-	 * @var \Runalyze\Model\Trackdata\Object 
+	 * @var \Runalyze\Model\Trackdata\Entity 
 	 */
 	protected $Trackdata;
 
 	/**
-	 * @var enum
+	 * @var int enum
 	 */
 	protected $IndexKey;
 
 	/**
-	 * @var enum[]
+	 * @var int[] enums
 	 */
 	protected $SumDifferencesKeys;
 
 	/**
-	 * @var enum[]
+	 * @var int[] enums
 	 */
 	protected $AvgValuesKeys;
 
@@ -42,14 +42,14 @@ class TimeSeriesForTrackdata extends TimeSeries {
 
 	/**
 	 * Construct time series for trackdata object
-	 * @param \Runalyze\Model\Trackdata\Object $trackdata
-	 * @param enum $indexKey
-	 * @param enum[] $sumDifferencesKeys
-	 * @param enum[] $avgValuesKeys
+	 * @param \Runalyze\Model\Trackdata\Entity $trackdata
+	 * @param int $indexKey enum
+	 * @param int[] $sumDifferencesKeys enums
+	 * @param int[] $avgValuesKeys enums
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(
-		Trackdata\Object $trackdata,
+		Trackdata\Entity $trackdata,
 		$indexKey,
 		$sumDifferencesKeys = array(),
 		$avgValuesKeys = array()
@@ -65,7 +65,7 @@ class TimeSeriesForTrackdata extends TimeSeries {
 			}
 		}
 
-		parent::__construct($trackdata->get($indexKey), $trackdata->get(Trackdata\Object::TIME));
+		parent::__construct($trackdata->get($indexKey), $trackdata->get(Trackdata\Entity::TIME));
 		$this->collectData();
 	}
 
@@ -74,7 +74,7 @@ class TimeSeriesForTrackdata extends TimeSeries {
 	 */
 	protected function collectData() {
 		$data = $this->Trackdata->get($this->IndexKey);
-		$time = $this->Trackdata->get(Trackdata\Object::TIME);
+		$time = $this->Trackdata->get(Trackdata\Entity::TIME);
 		$rawdata = array();
 
 		foreach (array_merge($this->SumDifferencesKeys, $this->AvgValuesKeys) as $key) {

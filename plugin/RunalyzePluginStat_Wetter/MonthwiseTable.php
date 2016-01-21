@@ -13,7 +13,7 @@ use Runalyze\Util\Time;
 
 /**
  * Table to show monthwise statistics
- * 
+ *
  * @author Hannes Christiansen
  * @package Runalyze\Plugin\Stat\Wetter
  */
@@ -42,8 +42,8 @@ class MonthwiseTable
 
 	/**
 	 * @param \PDO $pdo
-	 * @param type $accountId
-	 * @param type $equipmentTypeId
+	 * @param int $accountId
+	 * @param int $equipmentTypeId
 	 */
 	public function __construct(\PDO $pdo, $accountId, $equipmentTypeId = 0)
 	{

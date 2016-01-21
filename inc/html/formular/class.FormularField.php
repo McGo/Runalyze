@@ -35,7 +35,7 @@ abstract class FormularField extends HtmlTag {
 
 	/**
 	 * Value
-	 * @var string 
+	 * @var string|array
 	 */
 	protected $value = '';
 
@@ -59,7 +59,7 @@ abstract class FormularField extends HtmlTag {
 
 	/**
 	 * Enum from FormularValueParser
-	 * @var enum
+	 * @var string enum
 	 */
 	protected $parser = null;
 
@@ -85,7 +85,8 @@ abstract class FormularField extends HtmlTag {
 
 	/**
 	 * Set key as failed
-	 * @param string $key 
+	 * @param string $key
+	 * @return bool
 	 */
 	public static function hasKeyFailed($key) {
 		return in_array($key, self::$FAILED_KEYS);
@@ -111,7 +112,7 @@ abstract class FormularField extends HtmlTag {
 	 * Construct a new field
 	 * @param string $name
 	 * @param string $label
-	 * @param string $value optional, default: loading from $_POST
+	 * @param string|array $value optional, default: loading from $_POST
 	 */
 	public function __construct($name, $label, $value = '') {
 		$this->name = $name;
@@ -178,7 +179,7 @@ abstract class FormularField extends HtmlTag {
 
 	/**
 	 * Set parser
-	 * @param enum $parser
+	 * @param string $parser
 	 * @param array $options 
 	 */
 	public function setParser($parser, $options = array()) {

@@ -8,7 +8,7 @@ namespace Runalyze\View\Activity\Plot\Series;
 
 use Plot;
 use Runalyze\Configuration;
-use Runalyze\Model\Trackdata\Object as Trackdata;
+use Runalyze\Model\Trackdata\Entity as Trackdata;
 use Runalyze\Parameter\Application\PaceAxisType;
 use Runalyze\Parameter\Application\PaceUnit;
 use Runalyze\View\Activity;
@@ -23,7 +23,7 @@ use Runalyze\View\Activity;
 class Pace extends ActivitySeries {
 	/**
 	* How many outliers should be cutted away?
-	* @var type
+	* @var int
 	*/
 	private static $CUT_OUTLIER_PERCENTAGE = 10;
 
@@ -43,7 +43,7 @@ class Pace extends ActivitySeries {
 	protected $paceUnit;
 
 	/**
-	 * @var enum
+	 * @var string
 	 */
 	protected $paceUnitEnum;
 

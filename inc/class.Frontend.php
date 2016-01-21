@@ -5,6 +5,7 @@
  */
 
 use Runalyze\Configuration;
+use Runalyze\Error;
 
 /**
  * Frontend class for setting up everything
@@ -77,8 +78,8 @@ class Frontend {
 		date_default_timezone_set('Europe/Berlin');
 
 		$this->initLanguage();
-		$this->initCache();
 		$this->setAutoloader();
+		$this->initCache();
 		$this->initErrorHandling();
 		$this->initDatabase();
 		$this->initDebugMode();
@@ -106,9 +107,13 @@ class Frontend {
 	 * Setup Language
 	 */
 	private function initCache() {
-		require_once FRONTEND_PATH.'../lib/phpfastcache/phpfastcache.php';
 		require_once FRONTEND_PATH.'/system/class.Cache.php';
-		new Cache();
+
+		try {
+			new Cache();
+		} catch (Exception $E) {
+			die('Cache directory "./'.Cache::PATH.'/cache/" must be writable.');
+		}
 	}
 
 	/**
@@ -135,7 +140,7 @@ class Frontend {
 	 * Include class::Error and and initialise it
 	 */
 	protected function initErrorHandling() {
-		Error::init(Request::Uri());
+		\Runalyze\Error::init(Request::Uri());
 
 		if ($this->logGetAndPost) {
 			if (!empty($_POST))
@@ -149,12 +154,12 @@ class Frontend {
 	 * Connect to database
 	 */
 	private function initDatabase() {
-		require_once FRONTEND_PATH.'../config.php';
+		require_once FRONTEND_PATH.'../data/config.php';
 
 		$this->adminPassAsMD5 = md5($password);
 
-		DB::connect($host, $username, $password, $database);
-		unset($host, $username, $password, $database);
+		DB::connect($host, $port, $username, $password, $database);
+		unset($host, $port, $username, $password, $database);
 	}
 
 	/**
@@ -238,25 +243,5 @@ class Frontend {
 			$Panel = $Factory->newInstance($key);
 			$Panel->display();
 		}
-	}
-
-	/**
-	 * Test a plot
-	 * 
-	 * Will be displayed instead of the DataBrowser - Only for testing purposes!
-	 * @param string $includePath 
-	 * @param string $name
-	 * @param int $width
-	 * @param int $height
-	 */
-	public function testPlot($includePath, $name, $width, $height) {
-		echo '<div id="container"><div id="main"><div id="data-browser" class="panel c"><div class="panel-content">';
-
-		echo Plot::getDivFor($name, $width, $height);
-		include FRONTEND_PATH.$includePath;
-
-		echo '</div></div></div></div>';
-
-		exit();
 	}
 }

@@ -6,7 +6,7 @@
 
 namespace Runalyze\Calculation\HRV;
 
-use Runalyze\Model\HRV\Object;
+use Runalyze\Model\HRV\Entity;
 
 /**
  * Calculate statistics for hrv data
@@ -16,7 +16,7 @@ use Runalyze\Model\HRV\Object;
  */
 class Calculator {
 	/**
-	 * @var \Runalyze\Model\HRV\Object
+	 * @var \Runalyze\Model\HRV\Entity
 	 */
 	protected $Object;
 
@@ -92,14 +92,14 @@ class Calculator {
 
 	/**
 	 * Calculator for hrv statistics
-	 * @param \Runalyze\Model\HRV\Object $hrvObject
+	 * @param \Runalyze\Model\HRV\Entity $hrvObject
 	 * @param array $filter [optional] array with lower and upper limit for accepted values
 	 */
-	public function __construct(Object $hrvObject, array $filter = array(200, 2000)) {
+	public function __construct(Entity $hrvObject, array $filter = array(200, 2000)) {
 		$this->Object = clone $hrvObject;
 
 		if (count($filter) == 2) {
-			$this->Object->set(Object::DATA, array_filter($this->Object->data(), function($value) use ($filter) {
+			$this->Object->set(Entity::DATA, array_filter($this->Object->data(), function($value) use ($filter) {
 				return $filter[0] < $value && $value < $filter[1];
 			}));
 		}
@@ -107,7 +107,7 @@ class Calculator {
 
 	/**
 	 * Average r-r interval
-	 * @var int [ms]
+	 * @return int [ms]
 	 */
 	public function mean() {
 		return $this->Mean;
@@ -115,7 +115,7 @@ class Calculator {
 
 	/**
 	 * Standard deviation of r-r intervals
-	 * @var float [ms]
+	 * @return float [ms]
 	 */
 	public function SDNN() {
 		return $this->SDNN;
@@ -123,7 +123,7 @@ class Calculator {
 
 	/**
 	 * Standard deviation of 5 min averages of r-r intervals
-	 * @var float [ms]
+	 * @return float [ms]
 	 */
 	public function SDANN() {
 		return $this->SDANN;
@@ -131,7 +131,7 @@ class Calculator {
 
 	/**
 	 * Root mean square of successive differences
-	 * @var float [ms]
+	 * @return float [ms]
 	 */
 	public function RMSSD() {
 		return $this->RMSSD;
@@ -139,7 +139,7 @@ class Calculator {
 
 	/**
 	 * Standard deviation of successive differences
-	 * @var float [ms]
+	 * @return float [ms]
 	 */
 	public function SDSD() {
 		return $this->SDSD;
@@ -147,7 +147,7 @@ class Calculator {
 
 	/**
 	 * Proportion of successive differences larger than 50ms
-	 * @var float
+	 * @return float
 	 */
 	public function pNN50() {
 		return $this->pNN50;
@@ -155,7 +155,7 @@ class Calculator {
 
 	/**
 	 * Proportion of successive differences larger than 20ms
-	 * @var float
+	 * @return float
 	 */
 	public function pNN20() {
 		return $this->pNN20;

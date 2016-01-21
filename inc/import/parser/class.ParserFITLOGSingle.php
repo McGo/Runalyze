@@ -13,6 +13,9 @@ use Runalyze\Configuration;
  * @package Runalyze\Import\Parser
  */
 class ParserFITLOGSingle extends ParserAbstractSingleXML {
+	/** @var bool */
+	protected $HasRoute = true;
+
 	/**
 	 * Parse
 	 */
@@ -94,18 +97,22 @@ class ParserFITLOGSingle extends ParserAbstractSingleXML {
 			$lon  = round((double)$Point['lon'], 7);
 			$dist = empty($this->gps['latitude'])
 					? 0
-					: round(Runalyze\Model\Route\Object::gpsDistance($lat, $lon, end($this->gps['latitude']), end($this->gps['longitude'])), ParserAbstract::DISTANCE_PRECISION);
+					: round(Runalyze\Model\Route\Entity::gpsDistance($lat, $lon, end($this->gps['latitude']), end($this->gps['longitude'])), ParserAbstract::DISTANCE_PRECISION);
 		} elseif (count($this->gps['latitude'])) {
 			$lat  = end($this->gps['latitude']);
 			$lon  = end($this->gps['longitude']);
 			$dist = 0;
-		} else
-			return;
+		} else {
+			$this->HasRoute = false;
+		}
+
+		if ($this->HasRoute) {
+			$this->gps['km'][]        = empty($this->gps['km']) ? $dist : $dist + end($this->gps['km']);
+			$this->gps['latitude'][]  = $lat;
+			$this->gps['longitude'][] = $lon;
+		}
 
 		$this->gps['time_in_s'][] = (int)$Point['tm'];
-		$this->gps['km'][]        = empty($this->gps['km']) ? $dist : $dist + end($this->gps['km']);
-		$this->gps['latitude'][]  = $lat;
-		$this->gps['longitude'][] = $lon;
 		$this->gps['altitude'][]  = (!empty($Point['ele'])) ? (int)$Point['ele'] : 0;
 		$this->gps['heartrate'][] = (!empty($Point['hr'])) ? (int)$Point['hr'] : 0;
 	}

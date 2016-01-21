@@ -39,7 +39,7 @@ abstract class TableZonesAbstract {
 	public function __construct(Context $context) {
 		$this->Context = $context;
 
-		if ($this->Context->trackdata()->has(Runalyze\Model\Trackdata\Object::TIME)) {
+		if ($this->Context->trackdata()->has(Runalyze\Model\Trackdata\Entity::TIME)) {
 			$this->initData();
 			$this->convertData();
 		}
@@ -95,7 +95,7 @@ abstract class TableZonesAbstract {
 	 */
 	final public function getCode() {
 		if (empty($this->Data))
-			return;
+			return '';
 
 		$Code = '<table class="fullwidth bar-chart-table">';
 		$Code .= '<thead><tr>';

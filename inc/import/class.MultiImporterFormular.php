@@ -6,6 +6,7 @@
 
 use Runalyze\Model\Activity;
 use Runalyze\View\Activity\Preview;
+use Runalyze\Activity\DuplicateFinder;
 
 /**
  * Formular to import multiple trainings
@@ -70,13 +71,22 @@ class MultiImporterFormular extends Formular {
 	private function getFieldsetBlock() {
 		$String = '';
 
+		foreach ($this->TrainingObjects as $i => $TrainingObject)
+			$activityIDs[] = $TrainingObject->getActivityId();
+		
+		$duplicates = (new DuplicateFinder(DB::getInstance(), SessionAccountHandler::getId()))->checkForDuplicates($activityIDs);
+		$countDuplicates = count(array_filter($duplicates));
+	
 		$String .= HTML::info( sprintf( __('Found %s activities.'), count($this->TrainingObjects)) );
+		if($countDuplicates > 0)
+			$String .= HTML::warning(_n('Found <strong>one</strong> duplicate activity.','Found duplicate activities.', $countDuplicates));
+		
 		$String .= '<table class="fullwidth multi-import-table zebra-style c" id="multi-import-table">';
 		$String .= '<thead><tr><th>'.__('Import').'</th><th>'.__('Date').'</th><th>'.__('Duration').'</th><th>'.__('Distance').'</th><th colspan="4"></th></tr></thead>';
 		$String .= '<tbody>';
 
 		foreach ($this->TrainingObjects as $i => $TrainingObject)
-			$String .= '<tr>'.$this->getTableRowFor($TrainingObject, $i).'</tr>';
+			$String .= '<tr>'.$this->getTableRowFor($TrainingObject, $i, $duplicates[$TrainingObject->getActivityId()]).'</tr>';
 
 		$String .= '</tbody>';
 		$String .= '</table>';
@@ -95,25 +105,28 @@ class MultiImporterFormular extends Formular {
 	 * Get table row for training
 	 * @param TrainingObject $TrainingObject
 	 * @param int $i
+	 * @return string
 	 */
-	private function getTableRowFor(TrainingObject &$TrainingObject, $i) {
+	private function getTableRowFor(TrainingObject &$TrainingObject, $i, $isDuplicate) {
 		$TrainingObject->updateAfterParsing();
 
 		$Data  = urlencode(serialize($TrainingObject->getArray()));
 
-		$Inputs  = HTML::checkBox('training-import['.$i.']', true);
+		$Data  = urlencode(serialize($TrainingObject->getArray()));
+
+		$Inputs  = HTML::checkBox('training-import['.$i.']', !$isDuplicate);
 		$Inputs .= HTML::hiddenInput('training-data['.$i.']', $Data);
 
 		$Preview = new Preview(
-			new Activity\Object(array(
-				Activity\Object::TIMESTAMP => $TrainingObject->getTimestamp(),
-				Activity\Object::SPORTID => $TrainingObject->get('sportid'),
-				Activity\Object::TIME_IN_SECONDS => $TrainingObject->getTimeInSeconds(),
-				Activity\Object::DISTANCE => $TrainingObject->getDistance(),
-				Activity\Object::IS_TRACK => $TrainingObject->isTrack(),
-				Activity\Object::HR_AVG => $TrainingObject->getPulseAvg(),
-				Activity\Object::SPLITS => $TrainingObject->get('splits'),
-				Activity\Object::ROUTEID => $TrainingObject->hasPositionData()
+			new Activity\Entity(array(
+				Activity\Entity::TIMESTAMP => $TrainingObject->getTimestamp(),
+				Activity\Entity::SPORTID => $TrainingObject->get('sportid'),
+				Activity\Entity::TIME_IN_SECONDS => $TrainingObject->getTimeInSeconds(),
+				Activity\Entity::DISTANCE => $TrainingObject->getDistance(),
+				Activity\Entity::IS_TRACK => $TrainingObject->isTrack(),
+				Activity\Entity::HR_AVG => $TrainingObject->getPulseAvg(),
+				Activity\Entity::SPLITS => $TrainingObject->get('splits'),
+				Activity\Entity::ROUTEID => $TrainingObject->hasPositionData()
 			)
 		));
 

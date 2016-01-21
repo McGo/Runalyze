@@ -16,12 +16,6 @@ use Runalyze\Configuration;
  */
 class ParserGPXSingle extends ParserAbstractSingleXML {
 	/**
-	 * Limit to correct cadence values
-	 * @var int
-	 */
-	const RPM_LIMIT_FOR_CORRECTION = 130;
-
-	/**
 	 * Factor to guess pause limit
 	 * @var int
 	 */
@@ -121,27 +115,6 @@ class ParserGPXSingle extends ParserAbstractSingleXML {
 	}
 
 	/**
-	 * Correct cadence if needed
-	 * 
-	 * Cadence values are clearly defined by http://www8.garmin.com/xmlschemas/TrackPointExtensionv1.xsd
-	 * as "... measured in revolutions per minute." but it seems that
-	 * Strava exports them in spm (steps per minute).
-	 * 
-	 * @see https://github.com/Runalyze/Runalyze/issues/1367
-	 */
-	protected function correctCadenceIfNeeded() {
-		if (!empty($this->gps['rpm'])) {
-			$avg = array_sum($this->gps['rpm']) / count($this->gps['rpm']);
-
-			if ($avg > self::RPM_LIMIT_FOR_CORRECTION) {
-				$this->gps['rpm'] = array_map(function ($v) {
-					return round($v/2);
-				}, $this->gps['rpm']);
-			}
-		}
-	}
-
-	/**
 	 * Guess limit for pauses
 	 */
 	protected function guessLimitForPauses() {
@@ -188,7 +161,7 @@ class ParserGPXSingle extends ParserAbstractSingleXML {
 			$lon  = round((double)$Point['lon'], 7);
 			$dist = empty($this->gps['latitude'])
 					? 0
-					: round(Runalyze\Model\Route\Object::gpsDistance($lat, $lon, end($this->gps['latitude']), end($this->gps['longitude'])), ParserAbstract::DISTANCE_PRECISION);
+					: round(Runalyze\Model\Route\Entity::gpsDistance($lat, $lon, end($this->gps['latitude']), end($this->gps['longitude'])), ParserAbstract::DISTANCE_PRECISION);
 		} elseif (count($this->gps['latitude'])) {
 			$lat  = end($this->gps['latitude']);
 			$lon  = end($this->gps['longitude']);
@@ -245,6 +218,17 @@ class ParserGPXSingle extends ParserAbstractSingleXML {
 
 		return $timeToAdd;
 	}
+	
+	/**
+  	 * Parse metadata
+  	 */
+  	public function parseMetadata($metadata) {
+  	    if(isset($metadata->name))
+  		$this->TrainingObject->setComment((string)$metadata->name);
+  	    
+  	    if(isset($metadata->desc))
+  		$this->TrainingObject->setNotes((string)$metadata->desc);
+  	}
 
 	/**
 	 * Parse extension values

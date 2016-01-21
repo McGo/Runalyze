@@ -119,17 +119,17 @@ class RunalyzePluginPanel_Equipment extends PluginPanel {
 	}
 
 	/**
-	 * @param \Runalyze\Model\EquipmentType\Object $EquipmentType
+	 * @param \Runalyze\Model\EquipmentType\Entity $EquipmentType
 	 * @param boolean $inuse
 	 */
-	protected function showListFor(Model\EquipmentType\Object $EquipmentType, &$inuse) {
+	protected function showListFor(Model\EquipmentType\Entity $EquipmentType, &$inuse) {
 		$max = 0;
 		$showDistance = $EquipmentType->hasMaxDistance();
 		$hasMaxDuration = $showDistance || $EquipmentType->hasMaxDuration();
 		$allEquipment = DB::getInstance()->query('SELECT * FROM `'.PREFIX.'equipment` WHERE `typeid`="'.$EquipmentType->id().'" AND `accountid`="'.SessionAccountHandler::getId().'" ORDER BY ISNULL(`date_end`) DESC, `distance` DESC')->fetchAll();
 
 		foreach ($allEquipment as $data) {
-			$Object = new Model\Equipment\Object($data);
+			$Object = new Model\Equipment\Entity($data);
 			$Distance = new Distance($Object->totalDistance());
 			$Duration = new Duration($Object->duration());
 
@@ -203,7 +203,7 @@ class RunalyzePluginPanel_Equipment extends PluginPanel {
 
 		if (!empty($this->Equipment)) {
 			foreach ($this->Equipment as $data) {
-				$Object = new Model\Equipment\Object($data);
+				$Object = new Model\Equipment\Entity($data);
 				$in_use = $Object->isInUse() ? '' : ' unimportant';
 
 				$Pace = new Pace($Object->duration(), $Object->distance());
@@ -267,8 +267,8 @@ class RunalyzePluginPanel_Equipment extends PluginPanel {
 				COUNT(*) as `num`,
 				MIN(`s`/`distance`) as `pace_in_s`,
 				MAX(`distance`) as `dist`
-			FROM `runalyze_training` AS `act`
-            INNER JOIN `runalyze_activity_equipment` as `eq` ON `act`.`id` = `eq`.`activityid`
+			FROM `'.PREFIX.'training` AS `act`
+            INNER JOIN `'.PREFIX.'activity_equipment` as `eq` ON `act`.`id` = `eq`.`activityid`
 			GROUP BY `eq`.`equipmentid`'
 		)->fetchAll();
 

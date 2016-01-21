@@ -17,7 +17,7 @@ $Frontend = new Frontend();
 $Factory = Context::Factory();
 $Activity = $Factory->activity(Request::sendId());
 $ActivityOld = clone $Activity;
-$Route = $Factory->route($Activity->get(Activity\Object::ROUTEID));
+$Route = $Factory->route($Activity->get(Activity\Entity::ROUTEID));
 $RouteOld = clone $Route;
 
 try {
@@ -29,7 +29,7 @@ try {
 
 if ($result) {
 	$Calculator->calculateElevation();
-	$Activity->set(Activity\Object::ELEVATION, $Route->elevation());
+	$Activity->set(Activity\Entity::ELEVATION, $Route->elevation());
 
 	$UpdaterRoute = new Route\Updater(DB::getInstance(), $Route, $RouteOld);
 	$UpdaterRoute->setAccountID(SessionAccountHandler::getId());
@@ -39,7 +39,11 @@ if ($result) {
 	$UpdaterActivity->setAccountID(SessionAccountHandler::getId());
 	$UpdaterActivity->update();
 
-	echo __('Elevation data has been corrected.');
+	if (Request::param('strategy') == 'none') {
+		echo __('Corrected elevation data has been removed.');
+	} else {
+		echo __('Elevation data has been corrected.');
+	}
 
 	Ajax::setReloadFlag( Ajax::$RELOAD_DATABROWSER_AND_TRAINING );
 	echo Ajax::getReloadCommand();

@@ -21,13 +21,37 @@ interface ForecastStrategyInterface {
 
 	/**
 	 * Weather condition
-	 * @return \Runalze\Data\Weather\Condition
+	 * @return \Runalyze\Data\Weather\Condition
 	 */
 	public function condition();
 
 	/**
 	 * Temperature
-	 * @return \Runalze\Data\Weather\Temperature
+	 * @return \Runalyze\Data\Weather\Temperature
 	 */
 	public function temperature();
+	
+	/**
+	 * Wind Speed
+	 * @return \Runalyze\Data\Weather\WindSpeed
+	 */
+	public function windSpeed();
+	
+	/**
+	 * Wind degree
+	 * @return \Runalyze\Data\Weather\WindDegree
+	 */
+	public function windDegree();
+	
+	/**
+	 * Humidity
+	 * @return \Runalyze\Data\Weather\Humidity
+	 */
+	public function humidity();
+	
+	/**
+	 * Pressure
+	 * @return \Runalyze\Data\Weather\Pressure
+	 */
+	public function pressure();
 }

@@ -9,6 +9,8 @@
  * @author Hannes Christiansen
  * @package Runalyze\Import
  */
+use Runalyze\Error;
+
 class ImporterFactory {
 	/**
 	 * Creator: manually via form
@@ -35,7 +37,7 @@ class ImporterFactory {
 
 	/**
 	 * Import from garmin communicator
-	 * @var enum
+	 * @var string enum
 	 */
 	public static $FROM_COMMUNICATOR = 'NO_FILENAME_IMPORT_FROM_GARMIN_COMMUNICATOR';
 

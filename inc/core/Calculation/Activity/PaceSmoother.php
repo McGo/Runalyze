@@ -16,22 +16,22 @@ use Runalyze\Model\Trackdata;
  */
 class PaceSmoother {
 	/**
-	 * @var enum
+	 * @var int
 	 */
 	const MODE_STEP = 0;
 
 	/**
-	 * @var enum
+	 * @var int
 	 */
 	const MODE_TIME = 1;
 
 	/**
-	 * @var enum
+	 * @var int
 	 */
 	const MODE_DISTANCE = 2;
 
 	/**
-	 * @var \Runalyze\Model\Trackdata\Object
+	 * @var \Runalyze\Model\Trackdata\Entity
 	 */
 	protected $Trackdata;
 
@@ -46,7 +46,7 @@ class PaceSmoother {
 	protected $Smoothed = array();
 
 	/**
-	 * @var enum
+	 * @var int
 	 */
 	protected $Mode = 0;
 
@@ -62,10 +62,10 @@ class PaceSmoother {
 
 	/**
 	 * Smoother
-	 * @param \Runalyze\Model\Trackdata\Object $trackdata
+	 * @param \Runalyze\Model\Trackdata\Entity $trackdata
 	 * @param boolean $keepArraySize [optional]
 	 */
-	public function __construct(Trackdata\Object $trackdata, $keepArraySize = false) {
+	public function __construct(Trackdata\Entity $trackdata, $keepArraySize = false) {
 		$this->Trackdata = $trackdata;
 		$this->Loop = new Trackdata\Loop($trackdata);
 		$this->KeepArraySize = $keepArraySize;
@@ -74,7 +74,7 @@ class PaceSmoother {
 	/**
 	 * Smooth data
 	 * @param int|float $stepSize integer as steps, float as distance [km], int as time [s]
-	 * @param enum $mode [optional]
+	 * @param int $mode [optional]
 	 * @return array
 	 */
 	public function smooth($stepSize, $mode = self::MODE_STEP) {
@@ -96,7 +96,7 @@ class PaceSmoother {
 	/**
 	 * Set internals
 	 * @param int|float $stepSize
-	 * @param enum $mode
+	 * @param int $mode
 	 */
 	protected function set($stepSize, $mode) {
 		$this->StepSize = $stepSize;
@@ -121,11 +121,11 @@ class PaceSmoother {
 				break;
 
 			case self::MODE_TIME:
-				$this->runFastSmoothingForKey(Trackdata\Object::TIME);
+				$this->runFastSmoothingForKey(Trackdata\Entity::TIME);
 				break;
 
 			case self::MODE_DISTANCE:
-				$this->runFastSmoothingForKey(Trackdata\Object::DISTANCE);
+				$this->runFastSmoothingForKey(Trackdata\Entity::DISTANCE);
 				break;
 		}
 	}
@@ -177,8 +177,8 @@ class PaceSmoother {
 
 		while (!$this->Loop->isAtEnd()) {
 			$this->Loop->move($key, $this->StepSize);
-			$dist = $this->Loop->difference(Trackdata\Object::DISTANCE);
-			$pace = $dist > 0 ? round($this->Loop->difference(Trackdata\Object::TIME)/$dist) : 0;
+			$dist = $this->Loop->difference(Trackdata\Entity::DISTANCE);
+			$pace = $dist > 0 ? round($this->Loop->difference(Trackdata\Entity::TIME)/$dist) : 0;
 
 			if ($this->KeepArraySize) {
 				$steps = $this->Loop->currentStepSize();

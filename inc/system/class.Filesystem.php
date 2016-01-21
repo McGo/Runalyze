@@ -82,9 +82,9 @@ class Filesystem {
 
 		if (!$response) {
 			if (curl_errno($curl) == 0)
-				Error::getInstance()->addError('CUrl response was empty (url: '.$url.')');
+				\Runalyze\Error::getInstance()->addError('CUrl response was empty (url: '.$url.')');
 			else
-				Error::getInstance()->addError('CUrl-Error: '.curl_errno($curl).' '.curl_error($curl).' (url: '.$url.')');
+				\Runalyze\Error::getInstance()->addError('CUrl-Error: '.curl_errno($curl).' '.curl_error($curl).' (url: '.$url.')');
 		}
 
 		curl_close($curl);
@@ -119,10 +119,10 @@ class Filesystem {
 		if (empty($XML) || defined('RUNALYZE_TEST'))
 			return;
 
-		$FileName = 'log/corrupt.xml.'.time().'.xml';
+		$FileName = 'data/log/corrupt.xml.'.time().'.xml';
 		self::writeFile('../'.$FileName, $XML);
 
-		Error::getInstance()->addError('Die XML-Datei scheint fehlerhaft zu sein und konnte nicht erfolgreich geladen werden.
+		\Runalyze\Error::getInstance()->addError('Die XML-Datei scheint fehlerhaft zu sein und konnte nicht erfolgreich geladen werden.
 			Zur Analyse kannst du die Datei <a href="'.$FileName.'">'.$FileName.'</a> an einen Administrator schicken.');
 	}
 
@@ -138,7 +138,7 @@ class Filesystem {
 			fwrite($file, $fileContent);
 			fclose($file);
 		} else
-			Error::getInstance()->addError('Die Datei "'.$fileName.'" konnte zum Schreiben nicht erstellt/ge&ouml;ffnet werden.');
+			\Runalyze\Error::getInstance()->addError('Die Datei "'.$fileName.'" konnte zum Schreiben nicht erstellt/ge&ouml;ffnet werden.');
 	}
 
 	/**

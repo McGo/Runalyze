@@ -112,8 +112,8 @@ class ElevationAlgorithms extends ActivityPlot {
 
 	/**
 	 * Construct plot data
-	 * @param enum $algorithm
-	 * @param int $treshold
+	 * @param mixed $algorithm
+	 * @param int|bool $treshold
 	 * @return array
 	 */
 	protected function constructPlotDataFor($algorithm, $treshold = false) {
@@ -133,9 +133,9 @@ class ElevationAlgorithms extends ActivityPlot {
 		$Data = array();
 		$Points = $Calculator->strategy()->smoothedData();
 		$Indices = $Calculator->strategy()->smoothingIndices();
-		$hasDistances = $this->Context->trackdata()->get(Trackdata\Object::DISTANCE);
-		$Distances = $this->Context->trackdata()->get(Trackdata\Object::DISTANCE);
-		$Times = $this->Context->trackdata()->get(Trackdata\Object::TIME);
+		$hasDistances = $this->Context->trackdata()->get(Trackdata\Entity::DISTANCE);
+		$Distances = $this->Context->trackdata()->get(Trackdata\Entity::DISTANCE);
+		$Times = $this->Context->trackdata()->get(Trackdata\Entity::TIME);
 		$num = $this->Context->trackdata()->num();
 
 		foreach ($Indices as $i => $index) {

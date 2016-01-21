@@ -25,25 +25,25 @@ class SessionAccountHandler {
 
 	/**
 	 * Error: no error
-	 * @var enum
+	 * @var int
 	 */
 	public static $ERROR_TYPE_NO = 0;
 
 	/**
 	 * Error: no/wrong username
-	 * @var enum
+	 * @var int
 	 */
 	public static $ERROR_TYPE_WRONG_USERNAME = 1;
 
 	/**
 	 * Error: no/wrong password
-	 * @var enum
+	 * @var int
 	 */
 	public static $ERROR_TYPE_WRONG_PASSWORD = 2;
 
 	/**
 	 * Error: activation needed
-	 * @var enum
+	 * @var int
 	 */
 	public static $ERROR_TYPE_ACTIVATION_NEEDED = 3;
 
@@ -57,17 +57,33 @@ class SessionAccountHandler {
 	public function __construct() {
 		session_start();
 
-		if (!$this->tryToUseSession()) {
-			if ($this->tryToLoginFromPost()) {
-				header('Location: '.System::getFullDomain().'index.php');
-				exit;
-			} elseif ($this->tryToLoginFromCookie()) {
-				header('Location: '.System::getFullDomain().'index.php');
-				exit;
-			} elseif (!$this->isOnLoginPage() && !$this->isOnAdminPage()) {
-				header('Location: '.System::getFullDomain().'login.php');
-				exit;
+		if (USER_CANT_LOGIN) {
+			self::logout();
+			$this->forwardToLoginPage();
+		} elseif (!$this->tryToUseSession()) {
+			if ($this->tryToLoginFromPost() || $this->tryToLoginFromCookie()) {
+				$this->forwardToIndexPage();
+			} else {
+				$this->forwardToLoginPage();
 			}
+		}
+	}
+
+	/**
+	 * Forward to index page
+	 */
+	protected function forwardToIndexPage() {
+		header('Location: '.System::getFullDomain().'index.php');
+		exit;
+	}
+
+	/**
+	 * Forward to login page
+	 */
+	protected function forwardToLoginPage() {
+		if (!$this->isOnLoginPage() && !$this->isOnAdminPage()) {
+			header('Location: '.System::getFullDomain().'login.php');
+			exit;
 		}
 	}
 
