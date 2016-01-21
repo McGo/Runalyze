@@ -1,0 +1,6 @@
+User-agent: SEOkicks-Robot
+Disallow: /
+
+User-agent: *
+Disallow: /build/
+Sitemap: sitemap.xml
