@@ -21,10 +21,13 @@ $IgnoreIDs = \Runalyze\Configuration::ActivityForm()->ignoredActivityIDs();
 $DuplicateFinder = new DuplicateFinder(DB::getInstance);
 //$Request = DB::getInstance()->prepare('SELECT COUNT(*) FROM `'.PREFIX.'training` WHERE `activity_id`=:id LIMIT 1');
 
+$IgnoreIDs = array_map(function($v){
+	return (int)floor(strtotime($v)/60)*60;
+}, $IgnoreIDs);
+
 foreach ($IDs as $ID) {
-	$dup = $DuplicateFinder->checkForDuplicate(strtotime($ID));
-	//$Request->execute(array('id' => $ID));
-	$found = in_array($ID, $IgnoreIDs) || $Request->fetchColumn() > 0;
+	$dup = $DuplicateFinder->checkForDuplicate((int)floor(strtotime($ID)/60)*60);
+	$found = $dup || in_array($ID, $IgnoreIDs);
 	$Matches[$ID] = array('match' => $found);
 }
 
