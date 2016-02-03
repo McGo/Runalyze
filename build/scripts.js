@@ -11093,7 +11093,7 @@ var RunalyzeLeaflet = (function($){
 RunalyzeLeaflet.getNewLayers = function(){
 	return {
 		'OpenStreetMap': L.tileLayer(
-			'//{s}.tile.osm.org/{z}/{x}/{y}.png', {
+			'//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 			}
 		),
@@ -11167,7 +11167,7 @@ RunalyzeLeaflet.getNewLayers = function(){
 			}
 		),
 		'SigmaCycle': L.tileLayer(
-			'http://tiles1.sigma-dc-control.com/layer8/{z}/{x}/{y}.png', {
+			'//tiles1.sigma-dc-control.com/layer8/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://www.sigmasport.com/" target="_blank">SIGMA Sport &reg;</a>'
 			}
 		),
