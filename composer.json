@@ -5,15 +5,11 @@
         }
     },
     "require": {
-        "twig/twig": "1.*",
-        "monolog/monolog": "1.*",
-        "symfony/routing": "2.*",
-        "symfony/class-loader": "@stable",
-        "symfony/yaml": "@stable",
         "swiftmailer/swiftmailer": "@stable",
         "nojacko/email-validator": "~1.0",
         "league/geotools": "@stable",
 	"symfony/symfony": "^2.8",
         "sensio/framework-extra-bundle": "^3.0"
+        "phpfastcache/phpfastcache": "3.0.23"
     }
 }
