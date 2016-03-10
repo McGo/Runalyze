@@ -9,7 +9,7 @@
         "nojacko/email-validator": "~1.0",
         "league/geotools": "@stable",
 	"symfony/symfony": "^2.8",
-        "sensio/framework-extra-bundle": "^3.0"
+        "sensio/framework-extra-bundle": "^3.0",
         "phpfastcache/phpfastcache": "3.0.23"
     }
 }
